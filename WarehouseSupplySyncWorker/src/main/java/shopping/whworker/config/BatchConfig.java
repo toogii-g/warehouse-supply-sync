@@ -1,9 +1,13 @@
 package shopping.whworker.config;
 
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemReader;
@@ -18,11 +22,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.WritableResource;
 import org.springframework.jdbc.support.JdbcTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
 import shopping.whworker.domain.Product;
 import shopping.whworker.processor.ProductItemProcessor;
 
 @Configuration
-@EnableBatchProcessing
 public class BatchConfig {
 
     @Bean
@@ -48,7 +52,7 @@ public class BatchConfig {
     }
 
     @Bean
-    public Job job(JobRepository jobRepository, JdbcTransactionManager transactionManager,
+    public Job job(JobRepository jobRepository, PlatformTransactionManager transactionManager,
                    ItemReader<Product> itemReader, ItemWriter<Product> itemWriter) {
         return new JobBuilder("ioSampleJob", jobRepository)
                 .start(new StepBuilder("step1", jobRepository).<Product, Product>chunk(2, transactionManager)
