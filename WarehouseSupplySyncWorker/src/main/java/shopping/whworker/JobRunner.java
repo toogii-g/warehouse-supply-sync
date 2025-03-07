@@ -21,8 +21,9 @@ public class JobRunner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         JobParameters jobParameters = new JobParametersBuilder()
-                .addString("inputFile", "input.csv")
-                .addString("outputFile","output.csv")
+                .addString("inputFile", "C:/file/input.csv")
+                .addString("outputFile","C:/file/output.csv")
+                .addLong("run.id", System.currentTimeMillis())
                 .toJobParameters();
 
         jobLauncher.run(job, jobParameters);
